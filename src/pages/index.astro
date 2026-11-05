@@ -1,0 +1,774 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const allArticles = await getCollection('articles');
+const sortedArticles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const featured = sortedArticles.filter(a => a.data.featured).slice(0, 3);
+const recent = sortedArticles.slice(0, 6);
+
+const categoryLabels: Record<string, string> = {
+  preparation: 'Preparedness',
+  equipement: 'Equipment',
+  habitat: 'Shelter',
+  sante: 'Health',
+  securite: 'Security',
+};
+
+// Fetch latest YouTube videos from RSS at build time
+let youtubeVideos: { id: string; title: string }[] = [];
+try {
+  const rssRes = await fetch('https://www.youtube.com/feeds/videos.xml?channel_id=UCmb1kCi3xqqSmHFiMUx9o-w');
+  if (rssRes.ok) {
+    const xml = await rssRes.text();
+    const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)];
+    youtubeVideos = entries.slice(0, 6).map(e => {
+      const idMatch = e[1].match(/watch\?v=([A-Za-z0-9_-]{11})/);
+      const titleMatch = e[1].match(/<title>(.*?)<\/title>/);
+      return {
+        id: idMatch ? idMatch[1] : '',
+        title: titleMatch ? titleMatch[1].replace(/&amp;/g,'&').replace(/&quot;/g,'"') : '',
+      };
+    }).filter(v => v.id);
+  }
+} catch (e) {
+  // fallback: section masquée si RSS indisponible
+}
+
+const pillars = [
+  { icon: '🎒', title: 'Prepare', desc: '72-hour kits, food and water reserves — the foundations so you\'re never caught off guard.', href: '/categories/preparation', color: 'var(--accent)', image: '/images/pilier-prepare.jpg' },
+  { icon: '⚡', title: 'Equip', desc: 'Solar power, emergency lighting, communications — the gear that makes the real difference.', href: '/categories/equipement', color: 'var(--green-light)', image: '/images/pilier-equiper.jpg' },
+  { icon: '🏡', title: 'Shelter', desc: 'Tiny houses, off-grid homes, self-sufficient living — choose independence on your own terms.', href: '/categories/habitat', color: '#7ec8e3', image: '/images/pilier-habiter.jpg' },
+];
+---
+<BaseLayout title="Emergency Preparedness Guides for Your Family">
+  <Header />
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-image" style="background-image: url('/images/hero.jpg')"></div>
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span>Guides updated regularly</span>
+      </div>
+      <h1 class="hero-title">
+        Prepare your family.<br/>
+        <em>With confidence.</em>
+      </h1>
+      <p class="hero-desc">
+        Practical, tested guides to stay self-sufficient when emergencies happen — power outages, crises, evacuations. No panic. Just a method.
+      </p>
+      <div class="hero-actions">
+        <a href="/categories/preparation" class="btn btn--primary">Start with the 72-hour kit →</a>
+        <a href="/categories/equipement" class="btn btn--outline">See all equipment</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">72h</span><span class="stat-label">Minimum recommended autonomy</span></div>
+        <div class="stat"><span class="stat-num">4</span><span class="stat-label">Essential pillars</span></div>
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Guides tested in real conditions</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      {Array(2).fill(null).map(() => (
+        <>
+          <span>72-Hour Emergency Kit</span><span>•</span>
+          <span>Water Storage</span><span>•</span>
+          <span>Solar Power</span><span>•</span>
+          <span>Bug-Out Bag</span><span>•</span>
+          <span>First Aid</span><span>•</span>
+          <span>Tiny House</span><span>•</span>
+          <span>Food Self-Sufficiency</span><span>•</span>
+          <span>Emergency Communications</span><span>•</span>
+        </>
+      ))}
+    </div>
+  </div>
+
+  <!-- PILLARS -->
+  <section class="section pillars-section">
+    <div class="container">
+      <div class="pillars-grid">
+        {pillars.map(p => (
+          <a href={p.href} class="pillar-card">
+            <img src={p.image} alt={p.title} class="pillar-card__image" loading="lazy" />
+            <div class="pillar-card__body">
+              <h3 style={`color:${p.color}`}>{p.title}</h3>
+              <p>{p.desc}</p>
+              <span class="pillar-link" style={`color:${p.color}`}>Explore →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED ARTICLES -->
+  {featured.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="label">Featured</p>
+            <h2>Essential guides</h2>
+          </div>
+          <a href="/blog" class="btn btn--outline">All guides</a>
+        </div>
+        <div class="grid-3">
+          {featured.map(article => (
+            <a href={`/blog/${article.id}`} class="article-card">
+              {article.data.image
+                ? <img src={article.data.image} alt={article.data.title} class="article-card__image" loading="lazy" />
+                : <div class="article-card__image-placeholder">
+                    {article.data.category === 'preparation' ? '🎒' :
+                     article.data.category === 'equipement' ? '⚡' :
+                     article.data.category === 'habitat' ? '🏡' :
+                     article.data.category === 'sante' ? '🩹' : '🔒'}
+                  </div>
+              }
+              <div class="article-card__body">
+                <span class={`category-badge category-badge--${article.data.category}`}>
+                  {categoryLabels[article.data.category]}
+                </span>
+                <h3 class="article-card__title">{article.data.title}</h3>
+                <p class="article-card__excerpt">{article.data.description}</p>
+                <div class="article-card__meta">
+                  <span>{article.data.pubDate.toLocaleDateString('fr-FR', {day:'numeric',month:'short',year:'numeric'})}</span>
+                  {article.data.readingTime && <span>{article.data.readingTime} min</span>}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- RECENT ARTICLES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <p class="label">Latest posts</p>
+          <h2>Recent guides</h2>
+        </div>
+        <a href="/blog" class="btn btn--outline">View all</a>
+      </div>
+      <div class="grid-3">
+        {recent.map(article => (
+          <a href={`/blog/${article.id}`} class="article-card">
+            {article.data.image
+              ? <img src={article.data.image} alt={article.data.title} class="article-card__image" loading="lazy" />
+              : <div class="article-card__image-placeholder">
+                  {article.data.category === 'preparation' ? '🎒' :
+                   article.data.category === 'equipement' ? '⚡' :
+                   article.data.category === 'habitat' ? '🏡' :
+                   article.data.category === 'sante' ? '🩹' : '🔒'}
+                </div>
+            }
+            <div class="article-card__body">
+              <span class={`category-badge category-badge--${article.data.category}`}>
+                {categoryLabels[article.data.category]}
+              </span>
+              <h3 class="article-card__title">{article.data.title}</h3>
+              <p class="article-card__excerpt">{article.data.description}</p>
+              <div class="article-card__meta">
+                <span>{article.data.pubDate.toLocaleDateString('fr-FR', {day:'numeric',month:'short',year:'numeric'})}</span>
+                {article.data.readingTime && <span>{article.data.readingTime} min</span>}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- YOUTUBE -->
+  {youtubeVideos.length > 0 && (
+  <section class="section youtube-section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <p class="label">YouTube Channel</p>
+          <h2>Our latest videos</h2>
+        </div>
+        <div class="yt-controls">
+          <button class="shorts-btn" id="yt-prev" aria-label="Précédent">&#8592;</button>
+          <button class="shorts-btn shorts-btn--pause" id="yt-pause" aria-label="Pause / Lecture">&#9646;&#9646;</button>
+          <button class="shorts-btn" id="yt-next" aria-label="Suivant">&#8594;</button>
+          <a href="https://www.youtube.com/@refugeautonome" target="_blank" rel="noopener" class="btn btn--outline">View the channel →</a>
+        </div>
+      </div>
+      <div class="yt-scroll-track">
+        <div class="yt-scroll-row" id="yt-track">
+          {[...youtubeVideos, ...youtubeVideos].map((v, i) => (
+            <a class="yt-card" href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener" aria-label={v.title}>
+              <div class="yt-thumb-wrap">
+                <img
+                  src={`https://img.youtube.com/vi/${v.id}/hqdefault.jpg`}
+                  alt={v.title}
+                  loading="lazy"
+                  width="320"
+                  height="180"
+                />
+                <div class="yt-play-btn" aria-hidden="true">
+                  <svg viewBox="0 0 68 48" width="48" height="34"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#ff0000"/><path d="M45 24 27 14v20" fill="#fff"/></svg>
+                </div>
+              </div>
+              <p class="yt-card-title">{v.title}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+  )}
+
+  <script>
+    (function() {
+      var track = document.getElementById('yt-track');
+      if (!track) return;
+
+      var CARD_W = 280 + 20; // card width + gap
+      var N = track.querySelectorAll('.yt-card').length / 2; // original count
+      var HALF = CARD_W * N;
+      var pos = 0;
+      var paused = false;
+
+      function step() {
+        if (!paused) {
+          pos += 0.4;
+          if (pos >= HALF) pos -= HALF;
+          track.style.transform = 'translateX(-' + pos + 'px)';
+        }
+        requestAnimationFrame(step);
+      }
+      step();
+
+      var pauseBtn = document.getElementById('yt-pause');
+      if (pauseBtn) {
+        pauseBtn.addEventListener('click', function() {
+          paused = !paused;
+          pauseBtn.innerHTML = paused ? '&#9654;' : '&#9646;&#9646;';
+        });
+      }
+
+      function snapYt(dir) {
+        var current = Math.round(pos / CARD_W);
+        var target = (current + dir + N * 100) % N;
+        pos = target * CARD_W;
+        if (pos >= HALF) pos -= HALF;
+        track.style.transform = 'translateX(-' + pos + 'px)';
+      }
+
+      var prevBtn = document.getElementById('yt-prev');
+      var nextBtn = document.getElementById('yt-next');
+      if (prevBtn) prevBtn.addEventListener('click', function() { snapYt(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', function() { snapYt(1); });
+
+      var wrap = track.closest('.yt-scroll-track');
+      if (wrap) {
+        wrap.addEventListener('mouseenter', function() { paused = true; if(pauseBtn) pauseBtn.innerHTML = '&#9654;'; });
+        wrap.addEventListener('mouseleave', function() { paused = false; if(pauseBtn) pauseBtn.innerHTML = '&#9646;&#9646;'; });
+      }
+    })();
+  </script>
+
+  <!-- SHORTS CAROUSEL -->
+  <section class="section shorts-section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <p class="label">YouTube Channel</p>
+          <h2>Our latest Shorts</h2>
+        </div>
+        <div class="shorts-controls">
+          <button class="shorts-btn" id="shorts-prev" aria-label="Précédent">&#8592;</button>
+          <button class="shorts-btn shorts-btn--pause" id="shorts-pause" aria-label="Pause / Lecture">&#9646;&#9646;</button>
+          <button class="shorts-btn" id="shorts-next" aria-label="Suivant">&#8594;</button>
+        </div>
+      </div>
+      <div class="shorts-track-wrap">
+        <div class="shorts-track" id="shorts-track">
+          {[
+            { id: 'j_WOrEM6V2w', title: 'Réserve alimentaire : utilisez d\'abord les plus anciens' },
+            { id: 'mzsIGVMYYAA', title: 'Conserves : lisez l\'étiquette avant de les stocker' },
+            { id: 'TCe4vSqJwAk', title: 'Sans cuisson : 4 questions avant de préparer votre réserve' },
+            { id: 'f2ILqNAeu70', title: 'Kit de survie 72 h : commencez sans achat précipité' },
+            { id: 'nkUuXbbHXFA', title: 'Panne de réseau : radio, lampe et téléphone dans le kit 72 h' },
+            { id: 'Rz8bky0wrzY', title: '6 litres d\'eau : comment préparer sans alourdir le sac ?' },
+            { id: 'pp02sHP1m1Y', title: 'Préparer son foyer : 3 étapes simples pour commencer' },
+            { id: 'bZ2eCGJCtVo', title: 'Kit 72 h : pourquoi 6 litres d\'eau par personne ?' },
+            { id: 'yMkODLGwpUQ', title: '72 heures : les secours attendent-ils vraiment 3 jours ?' },
+          ].concat([
+            { id: 'j_WOrEM6V2w', title: 'Réserve alimentaire : utilisez d\'abord les plus anciens' },
+            { id: 'mzsIGVMYYAA', title: 'Conserves : lisez l\'étiquette avant de les stocker' },
+            { id: 'TCe4vSqJwAk', title: 'Sans cuisson : 4 questions avant de préparer votre réserve' },
+            { id: 'f2ILqNAeu70', title: 'Kit de survie 72 h : commencez sans achat précipité' },
+            { id: 'nkUuXbbHXFA', title: 'Panne de réseau : radio, lampe et téléphone dans le kit 72 h' },
+            { id: 'Rz8bky0wrzY', title: '6 litres d\'eau : comment préparer sans alourdir le sac ?' },
+            { id: 'pp02sHP1m1Y', title: 'Préparer son foyer : 3 étapes simples pour commencer' },
+            { id: 'bZ2eCGJCtVo', title: 'Kit 72 h : pourquoi 6 litres d\'eau par personne ?' },
+            { id: 'yMkODLGwpUQ', title: '72 heures : les secours attendent-ils vraiment 3 jours ?' },
+          ]).map(s => (
+            <a class="short-card" href={`https://www.youtube.com/shorts/${s.id}`} target="_blank" rel="noopener" aria-label={s.title}>
+              <div class="short-thumb-wrap">
+                <img
+                  src={`https://img.youtube.com/vi/${s.id}/hqdefault.jpg`}
+                  alt={s.title}
+                  loading="lazy"
+                  width="180"
+                  height="320"
+                />
+                <div class="short-play-btn" aria-hidden="true">
+                  <svg viewBox="0 0 68 48" width="38" height="27"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#ff0000"/><path d="M45 24 27 14v20" fill="#fff"/></svg>
+                </div>
+              </div>
+              <p class="short-card-title">{s.title}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function() {
+      var track = document.getElementById('shorts-track');
+      if (!track) return;
+
+      var CARD_W = 160 + 16; // card width + gap
+      var N = 9; // number of original cards
+      var HALF = CARD_W * N; // width of one set
+      var pos = 0;
+      var paused = false;
+      var speed = 0.5; // px per frame
+      var raf;
+
+      function step() {
+        if (!paused) {
+          pos += speed;
+          if (pos >= HALF) pos -= HALF;
+          track.style.transform = 'translateX(-' + pos + 'px)';
+        }
+        raf = requestAnimationFrame(step);
+      }
+      step();
+
+      var pauseBtn = document.getElementById('shorts-pause');
+      if (pauseBtn) {
+        pauseBtn.addEventListener('click', function() {
+          paused = !paused;
+          pauseBtn.innerHTML = paused ? '&#9654;' : '&#9646;&#9646;';
+          pauseBtn.setAttribute('aria-label', paused ? 'Lecture' : 'Pause');
+        });
+      }
+
+      function snapToCard(dir) {
+        var current = Math.round(pos / CARD_W);
+        var target = (current + dir + N * 100) % N;
+        pos = target * CARD_W;
+        if (pos >= HALF) pos -= HALF;
+        track.style.transform = 'translateX(-' + pos + 'px)';
+      }
+
+      var prevBtn = document.getElementById('shorts-prev');
+      var nextBtn = document.getElementById('shorts-next');
+      if (prevBtn) prevBtn.addEventListener('click', function() { snapToCard(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', function() { snapToCard(1); });
+
+      // Pause on hover
+      var wrap = track.closest('.shorts-track-wrap');
+      if (wrap) {
+        wrap.addEventListener('mouseenter', function() { paused = true; if(pauseBtn) { pauseBtn.innerHTML = '&#9654;'; } });
+        wrap.addEventListener('mouseleave', function() { paused = false; if(pauseBtn) { pauseBtn.innerHTML = '&#9646;&#9646;'; } });
+      }
+    })();
+  </script>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter-section">
+    <div class="container--narrow newsletter-inner">
+      <p class="label">The Family Ready Newsletter</p>
+      <h2>Every week, one practical guide</h2>
+      <p>Join thousands of families preparing for emergencies with calm confidence. No fearmongering — just practical, actionable content.</p>
+      <form class="newsletter-form" action="/newsletter" method="POST">
+        <input type="email" name="email" placeholder="votre@email.com" required />
+        <button type="submit" class="btn btn--primary">Join for free</button>
+      </form>
+      <p class="newsletter-note">Free. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+/* HERO */
+.hero {
+  position: relative;
+  padding: 6rem 0 5rem;
+  overflow: hidden;
+}
+.hero-bg-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  opacity: 0.45;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--bg-primary) 0%,
+    rgba(0,0,0,0.55) 40%,
+    rgba(0,0,0,0.3) 60%,
+    transparent 100%
+  ), linear-gradient(
+    to top,
+    var(--bg-primary) 0%,
+    transparent 25%
+  );
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  max-width: 640px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-family: var(--font-sub);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.75rem;
+}
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero-desc {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 2rem;
+}
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+.hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.stat { display: flex; flex-direction: column; gap: 0.25rem; }
+.stat-num {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  font-family: var(--font-sub);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* PILLARS */
+.section { padding: 4rem 0; }
+.pillars-section { padding: 3rem 0; }
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.pillar-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pillar-card:hover {
+  border-color: var(--border);
+  background: var(--bg-card-hover);
+}
+.pillar-card__image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+.pillar-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  flex: 1;
+}
+.pillar-card h3 {
+  font-family: var(--font-sub);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.pillar-card p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+}
+.pillar-link {
+  font-family: var(--font-sub);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* NEWSLETTER */
+.newsletter-section {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.newsletter-inner {
+  text-align: center;
+  padding: 4rem 1.5rem;
+}
+.newsletter-inner h2 { font-size: 2rem; margin: 0.75rem 0 1rem; }
+.newsletter-inner > p {
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+.newsletter-form {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 480px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.newsletter-form input {
+  flex: 1;
+  min-width: 220px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  outline: none;
+}
+.newsletter-form input:focus { border-color: var(--accent); }
+.newsletter-note {
+  margin-top: 0.75rem !important;
+  font-size: 0.75rem !important;
+  color: var(--text-muted) !important;
+}
+.article-card__image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+/* YOUTUBE */
+.youtube-section { border-top: 1px solid var(--border-subtle); }
+.yt-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.yt-scroll-track {
+  overflow: hidden;
+  margin: 0 -1rem;
+  padding: 0.5rem 1rem 1rem;
+}
+.yt-scroll-row {
+  display: flex;
+  gap: 1.25rem;
+  width: max-content;
+  will-change: transform;
+}
+.yt-card {
+  display: block;
+  width: 280px;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.yt-card:hover .yt-play-btn { transform: translate(-50%,-50%) scale(1.1); }
+.yt-thumb-wrap {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  aspect-ratio: 16/9;
+}
+.yt-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.yt-card:hover .yt-thumb-wrap img { transform: scale(1.03); }
+.yt-play-btn {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+}
+.yt-card-title {
+  margin-top: 0.6rem;
+  font-family: var(--font-sub);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* SHORTS */
+.shorts-section {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.shorts-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.shorts-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.shorts-btn:hover { background: var(--bg-card-hover); border-color: var(--accent); }
+.shorts-btn--pause { font-size: 0.75rem; letter-spacing: 0.05em; }
+.shorts-track-wrap {
+  overflow: hidden;
+  margin: 0 -1rem;
+  padding: 0.5rem 1rem 1rem;
+  cursor: grab;
+}
+.shorts-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  will-change: transform;
+}
+.short-card {
+  display: block;
+  width: 160px;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.short-thumb-wrap {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  aspect-ratio: 9/16;
+}
+.short-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.short-card:hover .short-thumb-wrap img { transform: scale(1.04); }
+.short-play-btn {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+  transition: opacity 0.2s;
+}
+.short-card:hover .short-play-btn { opacity: 1; }
+.short-card-title {
+  margin-top: 0.5rem;
+  font-family: var(--font-sub);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .hero-bg-image { background-position: center center; }
+  .hero-overlay { background: linear-gradient(to bottom, rgba(var(--bg-primary-rgb,10,10,10),0.7) 0%, var(--bg-primary) 80%); }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .yt-card { width: 240px; }
+  .short-card { width: 130px; }
+}
+</style>
