@@ -10,6 +10,12 @@ const featured = sortedArticles.filter(a => a.data.featured).slice(0, 3);
 const recent = sortedArticles.slice(0, 6);
 
 const categoryLabels: Record<string, string> = {
+  preparedness: 'Preparedness',
+  equipment: 'Equipment',
+  shelter: 'Shelter',
+  health: 'Health',
+  security: 'Security',
+  // legacy French keys
   preparation: 'Preparedness',
   equipement: 'Equipment',
   habitat: 'Shelter',
@@ -127,10 +133,10 @@ const pillars = [
               {article.data.image
                 ? <img src={article.data.image} alt={article.data.title} class="article-card__image" loading="lazy" />
                 : <div class="article-card__image-placeholder">
-                    {article.data.category === 'preparation' ? '🎒' :
-                     article.data.category === 'equipement' ? '⚡' :
-                     article.data.category === 'habitat' ? '🏡' :
-                     article.data.category === 'sante' ? '🩹' : '🔒'}
+                    {article.data.category === 'preparedness' || article.data.category === 'preparation' ? '🎒' :
+                     article.data.category === 'equipment' || article.data.category === 'equipement' ? '⚡' :
+                     article.data.category === 'shelter' || article.data.category === 'habitat' ? '🏡' :
+                     article.data.category === 'health' || article.data.category === 'sante' ? '🩹' : '🔒'}
                   </div>
               }
               <div class="article-card__body">
@@ -140,7 +146,7 @@ const pillars = [
                 <h3 class="article-card__title">{article.data.title}</h3>
                 <p class="article-card__excerpt">{article.data.description}</p>
                 <div class="article-card__meta">
-                  <span>{article.data.pubDate.toLocaleDateString('fr-FR', {day:'numeric',month:'short',year:'numeric'})}</span>
+                  <span>{article.data.pubDate.toLocaleDateString('en-US', {day:'numeric',month:'short',year:'numeric'})}</span>
                   {article.data.readingTime && <span>{article.data.readingTime} min</span>}
                 </div>
               </div>
@@ -167,10 +173,10 @@ const pillars = [
             {article.data.image
               ? <img src={article.data.image} alt={article.data.title} class="article-card__image" loading="lazy" />
               : <div class="article-card__image-placeholder">
-                  {article.data.category === 'preparation' ? '🎒' :
-                   article.data.category === 'equipement' ? '⚡' :
-                   article.data.category === 'habitat' ? '🏡' :
-                   article.data.category === 'sante' ? '🩹' : '🔒'}
+                  {article.data.category === 'preparedness' || article.data.category === 'preparation' ? '🎒' :
+                   article.data.category === 'equipment' || article.data.category === 'equipement' ? '⚡' :
+                   article.data.category === 'shelter' || article.data.category === 'habitat' ? '🏡' :
+                   article.data.category === 'health' || article.data.category === 'sante' ? '🩹' : '🔒'}
                 </div>
             }
             <div class="article-card__body">
@@ -180,7 +186,7 @@ const pillars = [
               <h3 class="article-card__title">{article.data.title}</h3>
               <p class="article-card__excerpt">{article.data.description}</p>
               <div class="article-card__meta">
-                <span>{article.data.pubDate.toLocaleDateString('fr-FR', {day:'numeric',month:'short',year:'numeric'})}</span>
+                <span>{article.data.pubDate.toLocaleDateString('en-US', {day:'numeric',month:'short',year:'numeric'})}</span>
                 {article.data.readingTime && <span>{article.data.readingTime} min</span>}
               </div>
             </div>

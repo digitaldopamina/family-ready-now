@@ -7,7 +7,7 @@ const articles = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
-    category: z.enum(['preparation', 'equipement', 'habitat', 'sante', 'securite']),
+    category: z.enum(['preparedness', 'equipment', 'shelter', 'health', 'security']),
     tags: z.array(z.string()).optional(),
     featured: z.boolean().optional().default(false),
     image: z.string().optional(),
