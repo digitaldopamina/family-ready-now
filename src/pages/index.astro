@@ -26,7 +26,7 @@ const categoryLabels: Record<string, string> = {
 // Fetch latest YouTube videos from RSS at build time
 let youtubeVideos: { id: string; title: string }[] = [];
 try {
-  const rssRes = await fetch('https://www.youtube.com/feeds/videos.xml?channel_id=UCmb1kCi3xqqSmHFiMUx9o-w');
+  const rssRes = await fetch('https://www.youtube.com/feeds/videos.xml?channel_id=UCBKHM9JPiG0Kx__2E5zyVhQ');
   if (rssRes.ok) {
     const xml = await rssRes.text();
     const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)];
@@ -209,7 +209,7 @@ const pillars = [
           <button class="shorts-btn" id="yt-prev" aria-label="Précédent">&#8592;</button>
           <button class="shorts-btn shorts-btn--pause" id="yt-pause" aria-label="Pause / Lecture">&#9646;&#9646;</button>
           <button class="shorts-btn" id="yt-next" aria-label="Suivant">&#8594;</button>
-          <a href="https://www.youtube.com/@refugeautonome" target="_blank" rel="noopener" class="btn btn--outline">View the channel →</a>
+          <a href="https://www.youtube.com/channel/UCBKHM9JPiG0Kx__2E5zyVhQ" target="_blank" rel="noopener" class="btn btn--outline">View the channel →</a>
         </div>
       </div>
       <div class="yt-scroll-track">
@@ -287,7 +287,8 @@ const pillars = [
     })();
   </script>
 
-  <!-- SHORTS CAROUSEL -->
+  <!-- SHORTS CAROUSEL — hidden until English Shorts are available -->
+  {false && (
   <section class="section shorts-section">
     <div class="container">
       <div class="section-header">
@@ -296,34 +297,14 @@ const pillars = [
           <h2>Our latest Shorts</h2>
         </div>
         <div class="shorts-controls">
-          <button class="shorts-btn" id="shorts-prev" aria-label="Précédent">&#8592;</button>
-          <button class="shorts-btn shorts-btn--pause" id="shorts-pause" aria-label="Pause / Lecture">&#9646;&#9646;</button>
-          <button class="shorts-btn" id="shorts-next" aria-label="Suivant">&#8594;</button>
+          <button class="shorts-btn" id="shorts-prev" aria-label="Previous">&#8592;</button>
+          <button class="shorts-btn shorts-btn--pause" id="shorts-pause" aria-label="Pause / Play">&#9646;&#9646;</button>
+          <button class="shorts-btn" id="shorts-next" aria-label="Next">&#8594;</button>
         </div>
       </div>
       <div class="shorts-track-wrap">
         <div class="shorts-track" id="shorts-track">
-          {[
-            { id: 'j_WOrEM6V2w', title: 'Réserve alimentaire : utilisez d\'abord les plus anciens' },
-            { id: 'mzsIGVMYYAA', title: 'Conserves : lisez l\'étiquette avant de les stocker' },
-            { id: 'TCe4vSqJwAk', title: 'Sans cuisson : 4 questions avant de préparer votre réserve' },
-            { id: 'f2ILqNAeu70', title: 'Kit de survie 72 h : commencez sans achat précipité' },
-            { id: 'nkUuXbbHXFA', title: 'Panne de réseau : radio, lampe et téléphone dans le kit 72 h' },
-            { id: 'Rz8bky0wrzY', title: '6 litres d\'eau : comment préparer sans alourdir le sac ?' },
-            { id: 'pp02sHP1m1Y', title: 'Préparer son foyer : 3 étapes simples pour commencer' },
-            { id: 'bZ2eCGJCtVo', title: 'Kit 72 h : pourquoi 6 litres d\'eau par personne ?' },
-            { id: 'yMkODLGwpUQ', title: '72 heures : les secours attendent-ils vraiment 3 jours ?' },
-          ].concat([
-            { id: 'j_WOrEM6V2w', title: 'Réserve alimentaire : utilisez d\'abord les plus anciens' },
-            { id: 'mzsIGVMYYAA', title: 'Conserves : lisez l\'étiquette avant de les stocker' },
-            { id: 'TCe4vSqJwAk', title: 'Sans cuisson : 4 questions avant de préparer votre réserve' },
-            { id: 'f2ILqNAeu70', title: 'Kit de survie 72 h : commencez sans achat précipité' },
-            { id: 'nkUuXbbHXFA', title: 'Panne de réseau : radio, lampe et téléphone dans le kit 72 h' },
-            { id: 'Rz8bky0wrzY', title: '6 litres d\'eau : comment préparer sans alourdir le sac ?' },
-            { id: 'pp02sHP1m1Y', title: 'Préparer son foyer : 3 étapes simples pour commencer' },
-            { id: 'bZ2eCGJCtVo', title: 'Kit 72 h : pourquoi 6 litres d\'eau par personne ?' },
-            { id: 'yMkODLGwpUQ', title: '72 heures : les secours attendent-ils vraiment 3 jours ?' },
-          ]).map(s => (
+          {([] as {id:string;title:string}[]).map(s => (
             <a class="short-card" href={`https://www.youtube.com/shorts/${s.id}`} target="_blank" rel="noopener" aria-label={s.title}>
               <div class="short-thumb-wrap">
                 <img
@@ -344,6 +325,7 @@ const pillars = [
       </div>
     </div>
   </section>
+  )}
 
   <script>
     (function() {
