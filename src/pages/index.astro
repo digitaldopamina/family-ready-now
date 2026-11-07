@@ -287,8 +287,13 @@ const pillars = [
     })();
   </script>
 
-  <!-- SHORTS CAROUSEL — hidden until English Shorts are available -->
-  {false && (
+  <!-- SHORTS CAROUSEL — visible when at least 2 Shorts are available -->
+  {(() => {
+    const shortsVideos: {id:string;title:string}[] = [
+      { id: '4o67xqYqFyc', title: 'Short #1' },
+      // Add more Shorts IDs here as the channel publishes them
+    ];
+    return shortsVideos.length >= 1 ? (
   <section class="section shorts-section">
     <div class="container">
       <div class="section-header">
@@ -304,7 +309,7 @@ const pillars = [
       </div>
       <div class="shorts-track-wrap">
         <div class="shorts-track" id="shorts-track">
-          {([] as {id:string;title:string}[]).map(s => (
+          {(shortsVideos as {id:string;title:string}[]).map(s => (
             <a class="short-card" href={`https://www.youtube.com/shorts/${s.id}`} target="_blank" rel="noopener" aria-label={s.title}>
               <div class="short-thumb-wrap">
                 <img
@@ -325,7 +330,8 @@ const pillars = [
       </div>
     </div>
   </section>
-  )}
+    ) : null;
+  })()}
 
   <script>
     (function() {
