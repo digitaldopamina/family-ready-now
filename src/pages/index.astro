@@ -287,19 +287,14 @@ const pillars = [
     })();
   </script>
 
-  <!-- SHORTS CAROUSEL — visible when at least 2 Shorts are available -->
-  {(() => {
-    const shortsVideos: {id:string;title:string}[] = [
-      { id: '4o67xqYqFyc', title: 'Short #1' },
-      // Add more Shorts IDs here as the channel publishes them
-    ];
-    return shortsVideos.length >= 1 ? (
+  <!-- SHORTS CAROUSEL — auto-populated from channel RSS, visible when videos exist -->
+  {youtubeVideos.length > 0 && (
   <section class="section shorts-section">
     <div class="container">
       <div class="section-header">
         <div>
           <p class="label">YouTube Channel</p>
-          <h2>Our latest Shorts</h2>
+          <h2>Our latest videos</h2>
         </div>
         <div class="shorts-controls">
           <button class="shorts-btn" id="shorts-prev" aria-label="Previous">&#8592;</button>
@@ -309,8 +304,8 @@ const pillars = [
       </div>
       <div class="shorts-track-wrap">
         <div class="shorts-track" id="shorts-track">
-          {(shortsVideos as {id:string;title:string}[]).map(s => (
-            <a class="short-card" href={`https://www.youtube.com/shorts/${s.id}`} target="_blank" rel="noopener" aria-label={s.title}>
+          {youtubeVideos.map(s => (
+            <a class="short-card" href={`https://www.youtube.com/watch?v=${s.id}`} target="_blank" rel="noopener" aria-label={s.title}>
               <div class="short-thumb-wrap">
                 <img
                   src={`https://img.youtube.com/vi/${s.id}/hqdefault.jpg`}
@@ -330,8 +325,7 @@ const pillars = [
       </div>
     </div>
   </section>
-    ) : null;
-  })()}
+  )}
 
   <script>
     (function() {
