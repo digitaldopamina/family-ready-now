@@ -11,15 +11,7 @@ const currentPath = Astro.url.pathname;
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="logo">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" stroke="#d4821a" stroke-width="1.5" fill="none"/>
-        <polygon points="16,7 25,12 25,20 16,25 7,20 7,12" fill="#d4821a" opacity="0.15"/>
-        <text x="16" y="20" text-anchor="middle" font-family="serif" font-size="11" fill="#d4821a" font-weight="bold">F</text>
-      </svg>
-      <div class="logo-text">
-        <span class="logo-name">Family Ready</span>
-        <span class="logo-sub">Now</span>
-      </div>
+      <img src="/images/logo-family-ready-now.png" alt="Family Ready Now" class="logo-img" />
     </a>
 
     <nav class="main-nav">
@@ -71,21 +63,11 @@ const currentPath = Astro.url.pathname;
   text-decoration: none;
   flex-shrink: 0;
 }
-.logo-text { display: flex; flex-direction: column; line-height: 1; }
-.logo-name {
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 900;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-.logo-sub {
-  font-family: var(--font-sub);
-  font-size: 0.6rem;
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent);
+.logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+  border-radius: 6px;
 }
 .main-nav {
   display: flex;
