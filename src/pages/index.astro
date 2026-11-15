@@ -304,7 +304,7 @@ const pillars = [
       </div>
       <div class="shorts-track-wrap">
         <div class="shorts-track" id="shorts-track">
-          {youtubeVideos.map(s => (
+          {[...youtubeVideos, ...youtubeVideos].map((s, i) => (
             <a class="short-card" href={`https://www.youtube.com/watch?v=${s.id}`} target="_blank" rel="noopener" aria-label={s.title}>
               <div class="short-thumb-wrap">
                 <img
@@ -333,7 +333,7 @@ const pillars = [
       if (!track) return;
 
       var CARD_W = 160 + 16; // card width + gap
-      var N = 9; // number of original cards
+      var N = track.querySelectorAll('.short-card').length / 2; // original count (cards are duplicated)
       var HALF = CARD_W * N; // width of one set
       var pos = 0;
       var paused = false;
