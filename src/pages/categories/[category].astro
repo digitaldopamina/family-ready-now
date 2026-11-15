@@ -6,11 +6,11 @@ import Footer from '../../components/Footer.astro';
 
 export async function getStaticPaths() {
   return [
-    { params: { category: 'preparation' } },
-    { params: { category: 'equipement' } },
-    { params: { category: 'habitat' } },
-    { params: { category: 'sante' } },
-    { params: { category: 'securite' } },
+    { params: { category: 'preparedness' } },
+    { params: { category: 'equipment' } },
+    { params: { category: 'shelter' } },
+    { params: { category: 'health' } },
+    { params: { category: 'security' } },
   ];
 }
 
@@ -21,11 +21,11 @@ const articles = allArticles
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const categoryInfo: Record<string, { label: string; desc: string; icon: string }> = {
-  preparation: { label: 'Préparation', desc: 'Kits 72h, réserves alimentaires et hydriques — construire les fondations de votre autonomie.', icon: '🎒' },
-  equipement:  { label: 'Équipement',  desc: 'Énergie solaire, éclairage, communication — le matériel testé et recommandé.', icon: '⚡' },
-  habitat:     { label: 'Habitat autonome', desc: 'Tiny houses, maisons off-grid, récupération d\'eau — vivre en dehors du système.', icon: '🏡' },
-  sante:       { label: 'Santé & Premiers secours', desc: 'Trousses de secours, médicaments essentiels, gestes qui sauvent.', icon: '🩹' },
-  securite:    { label: 'Sécurité', desc: 'Sécuriser son logement, plan d\'évacuation, documents importants.', icon: '🔒' },
+  preparedness: { label: 'Preparedness', desc: '72-hour kits, food and water reserves — building the foundations of your family autonomy.', icon: '🎒' },
+  equipment:    { label: 'Equipment',    desc: 'Solar power, emergency lighting, communications — the gear that makes the real difference.', icon: '⚡' },
+  shelter:      { label: 'Shelter',      desc: 'Tiny houses, off-grid homes, self-sufficient living — choose independence on your own terms.', icon: '🏡' },
+  health:       { label: 'Health',       desc: 'First aid kits, essential medications, life-saving skills for your family.', icon: '🩹' },
+  security:     { label: 'Security',     desc: 'Home hardening, evacuation plans, important documents — protecting what matters most.', icon: '🔒' },
 };
 
 const info = categoryInfo[category!] || { label: category, desc: '', icon: '📖' };
