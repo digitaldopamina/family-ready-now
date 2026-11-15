@@ -3,53 +3,197 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-const products = [
+const groups = [
   {
-    name: 'Reliance Aqua-Tainer 7-Gallon Water Container', category: 'Water at home', icon: '💧',
-    description: 'A rigid container for storing drinking water at home. Seven gallons is heavy when full, so plan a safe place to store and fill it.',
-    note: 'Home storage, not a go-bag item.',
-    url: 'https://www.amazon.com/dp/B001QC31G6?&linkCode=ll2&tag=familyreadyno-20&linkId=cede22ba5ace1ababeed5a760a0ac064&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+    id: 'ready-kits',
+    title: 'Ready-made 72-hour kits',
+    intro: 'A useful starting point when you want one bag to grab quickly. Open the bag, check every item, and add enough water, personal medication, documents, and supplies for your household.',
+    products: [
+      {
+        name: 'Ready America 70280 2-Person 3-Day Survival Backpack',
+        icon: '🎒',
+        description: 'A prepacked bag with emergency food, water pouches, basic first aid, ponchos, and survival blankets for two people.',
+        note: 'The included water is not a full three-day household water supply.',
+        asin: 'B000FJQQVI',
+      },
+      {
+        name: 'Ready America Deluxe 4-Person 3-Day Emergency Backpack',
+        icon: '🎒',
+        description: 'A larger prepacked kit with emergency food, four 1-liter water cartons, first aid, blankets, lighting, and a hand-crank radio.',
+        note: 'Add substantial drinking water and family-specific items; review the contents before relying on it.',
+        asin: 'B00149VP14',
+      },
+    ],
   },
   {
-    name: 'Midland ER10VP Portable Weather Radio', category: 'Information', icon: '📻',
-    description: 'A compact AM/FM/weather radio with a flashlight. Check battery requirements and the alert coverage for your area.',
-    note: 'Keep spare batteries with your kit.',
-    url: 'https://www.amazon.com/dp/B08SYK7LJT?th=1&linkCode=ll2&tag=familyreadyno-20&linkId=7ddcb0140b1a8ba9267f5b2f3ef7ebbe&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+    id: 'power',
+    title: 'Backup power and solar generators',
+    intro: 'Choose by the devices you actually need to run, their wattage, and how long you need them. A battery needs recharging; a solar panel is sold separately unless the listing says it is included.',
+    products: [
+      {
+        name: 'EcoFlow RIVER 3 Max Portable Power Station',
+        icon: '🔋',
+        description: 'A compact 572Wh station for charging phones, lights, laptops, and other compatible low-demand devices.',
+        note: 'Solar panel sold separately. Check output limits for your devices.',
+        asin: 'B0F4XRNTWX',
+      },
+      {
+        name: 'EcoFlow DELTA 3 Portable Power Station',
+        icon: '⚡',
+        description: 'A 1024Wh portable station with AC and USB outputs for a broader home outage plan.',
+        note: 'Solar panel sold separately. Estimate your daily energy use first.',
+        url: 'https://www.amazon.com/dp/B0DCBYMC9D?th=1&linkCode=ll2&tag=familyreadyno-20&linkId=1eb71045dae94786df636f242b92f7cb&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+      },
+      {
+        name: 'EcoFlow DELTA 3 Max Portable Power Station',
+        icon: '⚡',
+        description: 'A higher-capacity 2048Wh option for households with larger essential loads.',
+        note: 'Solar panel sold separately. Confirm appliance wattage and runtime.',
+        url: 'https://www.amazon.com/dp/B0FQV6LMVX?th=1&linkCode=ll2&tag=familyreadyno-20&linkId=a9af93f40d36ae01675f967f44e60918&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+      },
+      {
+        name: 'Jackery Solar Generator 1000 v2 + 200W Panel',
+        icon: '☀️',
+        description: 'A 1024Wh power station sold in a listing that includes a 200W solar panel.',
+        note: 'Compare the exact bundle contents and connector before buying.',
+        asin: 'B0D2L1G66J',
+      },
+    ],
   },
   {
-    name: 'Anker Zolo 20,000mAh USB-C Power Bank', category: 'Phone power', icon: '🔋',
-    description: 'A portable battery with a built-in USB-C cable for compatible phones and devices. Charge it before you need it.',
-    note: 'Check compatibility with your devices.',
-    url: 'https://www.amazon.com/dp/B0CZ9JLN3N?th=1&linkCode=ll2&tag=familyreadyno-20&linkId=4b02c5d2c3a7aa27c802d3974c8a4896&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+    id: 'solar',
+    title: 'Portable solar panels',
+    intro: 'Panels help recharge a compatible battery when there is enough sunlight. Their rated wattage is a lab figure; real charging varies with weather, angle, and shade.',
+    products: [
+      {
+        name: 'EcoFlow 160W Foldable Solar Panel',
+        icon: '☀️',
+        description: 'A folding panel with an adjustable stand for compatible portable power stations.',
+        note: 'Power station sold separately. Confirm input and cable compatibility.',
+        asin: 'B08R5JWL74',
+      },
+      {
+        name: 'EcoFlow 220W Portable Solar Panel',
+        icon: '☀️',
+        description: 'A larger folding panel with an adjustable stand for recharging a compatible station.',
+        note: 'Power station sold separately. Check panel size, weight, and connectors.',
+        asin: 'B0D2H94PS6',
+      },
+    ],
+  },
+  {
+    id: 'water',
+    title: 'Water storage and filtration',
+    intro: 'Store clean drinking water first. A portable filter is useful when you must treat a suitable water source, but it does not replace a stored supply.',
+    products: [
+      {
+        name: 'Reliance Aqua-Tainer 7-Gallon Water Container',
+        icon: '💧',
+        description: 'A rigid container for storing drinking water at home. Plan a safe place to store and fill it.',
+        note: 'Heavy when full; this is a home-storage item, not a go-bag item.',
+        url: 'https://www.amazon.com/dp/B001QC31G6?&linkCode=ll2&tag=familyreadyno-20&linkId=cede22ba5ace1ababeed5a760a0ac064&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+      },
+      {
+        name: 'Sawyer Squeeze Water Filtration System',
+        icon: '🚰',
+        description: 'A small filter with squeeze pouches for treating suitable fresh water during travel or evacuation.',
+        note: 'Check its limits: a filter for bacteria and protozoa is not a universal purifier.',
+        asin: 'B00B1OSU4W',
+      },
+    ],
+  },
+  {
+    id: 'essentials',
+    title: 'Light, information, shelter, and first aid',
+    intro: 'These items fill practical gaps that a prepacked bag may leave. Pick what fits your climate, household, and evacuation plan.',
+    products: [
+      {
+        name: 'Midland ER10VP Portable Weather Radio',
+        icon: '📻',
+        description: 'A compact AM/FM/weather radio with a flashlight for receiving information when phone service is unreliable.',
+        note: 'Check alert coverage and keep the required spare batteries.',
+        url: 'https://www.amazon.com/dp/B08SYK7LJT?th=1&linkCode=ll2&tag=familyreadyno-20&linkId=7ddcb0140b1a8ba9267f5b2f3ef7ebbe&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+      },
+      {
+        name: 'Anker Zolo 20,000mAh USB-C Power Bank',
+        icon: '📱',
+        description: 'A portable battery with a built-in USB-C cable for compatible phones and small devices.',
+        note: 'Charge it in advance and check compatibility with your devices.',
+        url: 'https://www.amazon.com/dp/B0CZ9JLN3N?th=1&linkCode=ll2&tag=familyreadyno-20&linkId=4b02c5d2c3a7aa27c802d3974c8a4896&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl',
+      },
+      {
+        name: 'Coleman Sundome Camping Tent',
+        icon: '⛺',
+        description: 'A tent with a rainfly for camping or a suitable outdoor evacuation location.',
+        note: 'Choose the correct size; a tent is not a substitute for a safe indoor shelter.',
+        asin: 'B0D7QHY574',
+      },
+      {
+        name: 'Energizer WeatheReady PRO-360 LED Lantern',
+        icon: '💡',
+        description: 'Battery-powered room lighting for a blackout, with a handle for moving it around the home.',
+        note: 'Store the required spare batteries with it.',
+        asin: 'B09329QHWN',
+      },
+      {
+        name: 'First Aid Only 298-Piece Family First Aid Kit',
+        icon: '🩹',
+        description: 'A basic home and travel kit with bandages, dressings, and other common first-aid supplies.',
+        note: 'Add personal medicines and instructions separately.',
+        asin: 'B000069EYA',
+      },
+      {
+        name: 'Datrex 3600-Calorie Emergency Food Bar',
+        icon: '🥫',
+        description: 'A compact, shelf-stable emergency food ration to keep as one part of a food plan.',
+        note: 'One pack is not a complete three-day food plan for a family.',
+        asin: 'B001CSAHW0',
+      },
+    ],
   },
 ];
+
+const productUrl = (product: { asin?: string; url?: string }) =>
+  product.url ?? `https://www.amazon.com/dp/${product.asin}?tag=familyreadyno-20`;
 ---
-<BaseLayout title="Emergency Gear — Equipment to Consider" description="A short, practical selection of equipment for a 72-hour home emergency plan, with clear affiliate disclosures.">
+<BaseLayout title="Emergency Gear — 72-Hour Kits, Solar & Essentials" description="Explore 72-hour emergency bags, portable power stations, solar panels, water storage, shelter and essential supplies for your family.">
   <Header />
   <main>
     <section class="page-header"><div class="container">
       <p class="label">Family Ready Now</p>
-      <h1>Equipment to consider</h1>
-      <p class="page-desc">Start with your family's needs, then compare the product details before buying. These are examples to help you build a 72-hour plan; they are not a preassembled kit.</p>
-      <p class="affiliate-notice"><strong>As an Amazon Associate I earn from qualifying purchases.</strong> The Amazon buttons below are paid links. We may receive a commission if you purchase through them, at no extra cost to you. <a href="/affiliates">How our links work</a>.</p>
+      <h1>Build your emergency kit</h1>
+      <p class="page-desc">Start with your family's needs, then compare the exact product details before buying. These are equipment options, not products we claim to have personally tested.</p>
+      <p class="affiliate-notice"><strong>As an Amazon Associate I earn from qualifying purchases.</strong> Every Amazon button below is a paid link. We may earn a commission at no extra cost to you. <a href="/affiliates">How our links work</a>.</p>
+      <nav class="group-nav" aria-label="Browse equipment categories">
+        {groups.map(group => <a href={`#${group.id}`}>{group.title}</a>)}
+      </nav>
     </div></section>
-    <section class="section"><div class="container">
-      <div class="products-grid">
-        {products.map(product => (
-          <article class="product-card">
-            <div class="product-icon" aria-hidden="true">{product.icon}</div>
-            <p class="product-cat">{product.category}</p>
-            <h2 class="product-name">{product.name}</h2>
-            <p class="product-desc">{product.description}</p>
-            <p class="product-note">{product.note}</p>
-            <div class="product-footer">
-              <a href={product.url} class="btn btn--primary" target="_blank" rel="sponsored noopener noreferrer">View on Amazon →</a>
-              <span class="paid-label">(paid link)</span>
-            </div>
-          </article>
-        ))}
-      </div>
-      <p class="section-note">Availability and prices can change on Amazon. For water planning, the <a href="https://www.cdc.gov/water-emergency/about/how-to-create-and-store-an-emergency-water-supply.html" target="_blank" rel="noopener noreferrer">CDC recommends at least one gallon per person per day for three days</a>.</p>
+    {groups.map(group => (
+      <section class="section" id={group.id}><div class="container">
+        <div class="group-heading">
+          <h2>{group.title}</h2>
+          <p>{group.intro}</p>
+        </div>
+        <div class="products-grid">
+          {group.products.map(product => (
+            <article class="product-card">
+              <div class="product-icon" aria-hidden="true">{product.icon}</div>
+              <h3 class="product-name">{product.name}</h3>
+              <p class="product-desc">{product.description}</p>
+              <p class="product-note">{product.note}</p>
+              <div class="product-footer">
+                <a href={productUrl(product)} class="btn btn--primary" target="_blank" rel="sponsored noopener noreferrer">View on Amazon →</a>
+                <span class="paid-label">(paid link)</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div></section>
+    ))}
+    <section class="closing-note"><div class="container">
+      <h2>Before you rely on a ready-made bag</h2>
+      <p>Check its contents and expiry dates, then add what your family actually needs. For water, the <a href="https://www.cdc.gov/water-emergency/about/how-to-create-and-store-an-emergency-water-supply.html" target="_blank" rel="noopener noreferrer">CDC recommends at least one gallon per person per day for three days</a>. The ready-made bags above do not contain that much water.</p>
+      <p>Amazon prices and availability change. Confirm the size, seller, included accessories, and current details on the product page.</p>
     </div></section>
   </main>
   <Footer />
@@ -60,19 +204,27 @@ const products = [
 .page-header h1 { font-size: clamp(2rem, 4vw, 3rem); margin: 0.5rem 0; }
 .page-desc { color: var(--text-secondary); max-width: 52rem; line-height: 1.6; }
 .affiliate-notice { max-width: 52rem; margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--bg-card); border-left: 4px solid var(--accent); line-height: 1.55; }
-.affiliate-notice a, .section-note a { color: var(--accent); }
-.section { padding: 3rem 0 5rem; }
+.affiliate-notice a, .closing-note a { color: var(--accent); }
+.group-nav { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 1.6rem; }
+.group-nav a { border: 1px solid var(--border-subtle); padding: 0.55rem 0.8rem; color: var(--text-primary); font-size: 0.85rem; text-decoration: none; }
+.group-nav a:hover, .group-nav a:focus-visible { border-color: var(--accent); color: var(--accent); }
+.section { padding: 3rem 0; scroll-margin-top: 2rem; }
+.section + .section { border-top: 1px solid var(--border-subtle); }
+.group-heading { max-width: 55rem; margin-bottom: 1.5rem; }
+.group-heading h2 { font-family: var(--font-heading); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 0.5rem; }
+.group-heading p { color: var(--text-secondary); line-height: 1.6; }
 .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 .product-card { background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.65rem; }
 .product-icon { font-size: 2rem; }
-.product-cat { font-family: var(--font-sub); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
 .product-name { font-family: var(--font-heading); font-size: 1.2rem; line-height: 1.3; }
 .product-desc { color: var(--text-secondary); line-height: 1.55; flex: 1; }
-.product-note { font-size: 0.8rem; color: var(--text-muted); }
+.product-note { font-size: 0.85rem; color: var(--text-muted); line-height: 1.45; }
 .product-footer { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); }
 .product-footer .btn { font-size: 0.85rem; padding: 0.7rem 1rem; }
 .paid-label { font-size: 0.78rem; color: var(--text-secondary); }
-.section-note { max-width: 52rem; margin-top: 1.5rem; color: var(--text-secondary); line-height: 1.55; }
+.closing-note { border-top: 1px solid var(--border-subtle); padding: 2.5rem 0 4rem; }
+.closing-note h2 { font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.7rem; }
+.closing-note p { max-width: 55rem; color: var(--text-secondary); line-height: 1.6; margin: 0.6rem 0; }
 @media (max-width: 900px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .products-grid { grid-template-columns: 1fr; } }
 </style>
