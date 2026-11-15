@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout title="Affiliate Disclosure" description="How Family Ready Now uses affiliate links and earns commissions.">
+  <Header />
+  <main class="container disclosure-page">
+    <p class="label">Transparency</p>
+    <h1>Affiliate disclosure</h1>
+    <p class="required-statement">As an Amazon Associate I earn from qualifying purchases.</p>
+    <p>Some links on Family Ready Now are affiliate links. If you buy an eligible product after following one of these links, we may earn a commission at no extra cost to you. We identify these links near the recommendation with “(paid link)”.</p>
+    <p>We select products for their relevance to a family emergency plan. A product's presence on this site does not mean that we have personally tested it. Check the current listing, specifications, compatibility, availability, and price on the retailer's page before purchasing.</p>
+    <p>Our guidance is educational. Adapt any checklist to your household and follow current instructions from your local emergency authorities.</p>
+    <a href="/boutique" class="btn btn--primary">Explore equipment →</a>
+  </main>
+  <Footer />
+</BaseLayout>
+<style>
+.disclosure-page { max-width: 50rem; padding-top: 4rem; padding-bottom: 5rem; }
+.disclosure-page h1 { font-size: clamp(2rem, 4vw, 3rem); margin: 0.5rem 0 1.5rem; }
+.disclosure-page p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.25rem; }
+.disclosure-page .required-statement { color: var(--text-primary); font-weight: 700; padding: 1rem 1.25rem; border-left: 4px solid var(--accent); background: var(--bg-card); }
+.disclosure-page .btn { display: inline-block; margin-top: 0.75rem; }
+</style>
