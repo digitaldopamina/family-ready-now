@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import FormationPromo from '../components/FormationPromo.astro';
 
 interface ArticleData {
   title: string;
@@ -204,7 +205,7 @@ const relatedArticles = allArticles
           <div class="sidebar-newsletter">
             <p class="sidebar-newsletter-label">Newsletter</p>
             <p class="sidebar-newsletter-text">Guides pratiques chaque semaine</p>
-            <a href="/newsletter" class="sidebar-newsletter-btn">S'inscrire gratuitement →</a>
+            <a href="/#newsletter" class="sidebar-newsletter-btn">S'inscrire gratuitement →</a>
           </div>
         </div>
       </aside>
@@ -249,6 +250,8 @@ const relatedArticles = allArticles
         <div class="prose">
           <slot />
         </div>
+
+        <FormationPromo compact />
 
         <!-- YouTube Video -->
         {youtubeId && (
@@ -311,10 +314,10 @@ const relatedArticles = allArticles
 
         <!-- Newsletter CTA -->
         <div class="article-cta">
-          <p class="label">Rejoindre la communauté</p>
-          <h3>Recevoir nos guides chaque semaine</h3>
-          <p>Des conseils pratiques, des retours terrain, les meilleures ressources — directement dans votre boîte mail.</p>
-          <a href="/newsletter" class="btn btn--primary">Rejoindre le Refuge →</a>
+          <p class="label">Join the community</p>
+          <h3>Get one practical guide every week</h3>
+          <p>Tested advice, field notes, the best resources — straight to your inbox.</p>
+          <a href="/#newsletter" class="btn btn--primary">Join Family Ready Now →</a>
         </div>
       </article>
     </div>

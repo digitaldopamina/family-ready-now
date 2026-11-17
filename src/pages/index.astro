@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import FormationPromo from '../components/FormationPromo.astro';
 import { getCollection } from 'astro:content';
 
 const allArticles = await getCollection('articles');
@@ -116,6 +117,13 @@ const pillars = [
           </a>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- GUIDE PROMO -->
+  <section class="section">
+    <div class="container">
+      <FormationPromo />
     </div>
   </section>
 
@@ -385,7 +393,7 @@ const pillars = [
   </script>
 
   <!-- NEWSLETTER -->
-  <section class="newsletter-section">
+  <section class="newsletter-section" id="newsletter">
     <div class="container--narrow newsletter-inner">
       <p class="label">The Family Ready Newsletter</p>
       <h2>Every week, one practical guide</h2>
